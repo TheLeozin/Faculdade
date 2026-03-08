@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assistente IA — Mensagens Corporativas</title>
+
+  <!-- Google Fonts: Cormorant Garamond (display) + Figtree (corpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ======================================================
+       VARIÁVEIS & RESET
+    ====================================================== */
+    :root {
+      --bg:          #F0F4F9;
+      --surface:     #FFFFFF;
+      --navy:        #132C5E;
+      --navy-mid:    #1E4080;
+      --blue:        #2B5BE0;
+      --blue-light:  #EBF0FD;
+      --blue-glow:   rgba(43, 91, 224, 0.18);
+      --accent:      #3B82F6;
+      --text:        #111827;
+      --text-muted:  #6B7280;
+      --border:      #D9E2EF;
+      --border-focus:#2B5BE0;
+      --success:     #059669;
+      --radius-sm:   8px;
+      --radius-md:   14px;
+      --radius-lg:   20px;
+      --shadow-card: 0 4px 24px rgba(19, 44, 94, 0.08), 0 1px 4px rgba(19,44,94,0.04);
+      --shadow-btn:  0 4px 16px rgba(43, 91, 224, 0.35);
+      --transition:  all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      /* textura sutil no fundo */
+      background-image:
+        radial-gradient(circle at 20% 0%, rgba(43,91,224,0.06) 0%, transparent 55%),
+        radial-gradient(circle at 80% 100%, rgba(19,44,94,0.05) 0%, transparent 55%);
+    }
+
+    /* ======================================================
+       LAYOUT PRINCIPAL
+    ====================================================== */
+    .page {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 20px 32px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* ======================================================
+       CABEÇALHO
+    ====================================================== */
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeDown 0.55s ease both;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue-light);
+      border: 1px solid rgba(43,91,224,0.2);
+      border-radius: 100px;
+      padding: 6px 14px;
+      margin-bottom: 20px;
+    }
+
+    .header-badge .dot {
+      width: 7px; height: 7px;
+      background: var(--blue);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    .header-badge span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* Ícone do cabeçalho */
+    .header-icon {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 8px 24px rgba(43,91,224,0.3);
+    }
+
+    .header-icon svg {
+      width: 30px; height: 30px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 5vw, 2.6rem);
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-muted);
+      max-width: 440px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ======================================================
+       CARD PRINCIPAL
+    ====================================================== */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border);
+      padding: 36px;
+      animation: fadeUp 0.6s ease both 0.1s;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ======================================================
+       FORMULÁRIO
+    ====================================================== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+
+    .label-hint {
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    select, textarea {
+      font-family: 'Figtree', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text);
+      background: #FAFBFD;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      transition: var(--transition);
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+      width: 100%;
+    }
+
+    /* seta customizada no select */
+    .select-wrapper {
+      position: relative;
+    }
+    .select-wrapper::after {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 4.5px solid transparent;
+      border-right: 4.5px solid transparent;
+      border-top: 5.5px solid var(--text-muted);
+    }
+
+    select:focus, textarea:focus {
+      border-color: var(--border-focus);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--blue-glow);
+    }
+
+    select:hover:not(:focus), textarea:hover:not(:focus) {
+      border-color: #b0bfd4;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+      line-height: 1.6;
+    }
+
+    textarea::placeholder { color: #AAB4C4; }
+
+    /* ======================================================
+       BOTÃO PRINCIPAL
+    ====================================================== */
+    .btn-generate {
+      margin-top: 24px;
+      width: 100%;
+      background: linear-gradient(135deg, var(--navy-mid) 0%, var(--blue) 100%);
+      color: #fff;
+      font-family: 'Figtree', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 15px 28px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-generate::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .btn-generate:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(43,91,224,0.42);
+    }
+
+    .btn-generate:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: var(--shadow-btn);
+    }
+
+    .btn-generate:disabled {
+      opacity: 0.72;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-generate svg {
+      width: 18px; height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    /* ======================================================
+       SPINNER
+    ====================================================== */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    /* ======================================================
+       ÁREA DE RESPOSTA
+    ====================================================== */
+    #output-section {
+      margin-top: 24px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      animation: fadeUp 0.45s ease both;
+      display: none; /* oculto até gerar */
+    }
+
+    .output-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, #F7F9FF 0%, #EEF3FF 100%);
+    }
+
+    .output-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .output-indicator {
+      width: 8px; height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(5,150,105,0.18);
+    }
+
+    .output-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .output-meta {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .btn-copy {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-family: 'Figtree', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-copy:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .btn-copy.copied {
+      border-color: var(--success);
+      color: var(--success);
+      background: rgba(5,150,105,0.07);
+    }
+
+    .btn-copy svg {
+      width: 13px; height: 13px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .output-body {
+      padding: 28px;
+    }
+
+    #output-text {
+      font-size: 14.5px;
+      line-height: 1.78;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-weight: 400;
+    }
+
+    /* Efeito de digitação */
+    .typing-cursor::after {
+      content: '|';
+      color: var(--blue);
+      animation: blink 0.9s step-end infinite;
+      margin-left: 1px;
+    }
+
+    /* ======================================================
+       ESTADO DE CARREGAMENTO (dentro do card)
+    ====================================================== */
+    #loading-section {
+      margin-top: 24px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: var(--shadow-card);
+      padding: 36px 28px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .loading-ring {
+      position: relative;
+      width: 44px; height: 44px;
+    }
+
+    .loading-ring svg {
+      width: 44px; height: 44px;
+      animation: spin 1.2s linear infinite;
+    }
+
+    .loading-ring circle {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+    }
+
+    .loading-ring .track {
+      stroke: var(--blue-light);
+    }
+
+    .loading-ring .arc {
+      stroke: var(--blue);
+      stroke-dasharray: 88;
+      stroke-dashoffset: 60;
+    }
+
+    .loading-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .loading-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: -8px;
+    }
+
+    /* ======================================================
+       MENSAGEM DE ERRO
+    ====================================================== */
+    #error-section {
+      margin-top: 24px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid #FCA5A5;
+      background: #FFF5F5;
+      padding: 18px 22px;
+      display: none;
+      align-items: flex-start;
+      gap: 12px;
+      animation: fadeUp 0.35s ease both;
+    }
+
+    #error-section svg {
+      width: 20px; height: 20px;
+      stroke: #DC2626;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .error-content .error-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #991B1B;
+      margin-bottom: 2px;
+    }
+
+    .error-content .error-msg {
+      font-size: 13px;
+      color: #B91C1C;
+    }
+
+    /* ======================================================
+       RODAPÉ
+    ====================================================== */
+    footer {
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 400;
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    footer svg {
+      width: 14px; height: 14px;
+      stroke: var(--text-muted);
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ======================================================
+       ANIMAÇÕES
+    ====================================================== */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.55; transform: scale(0.85); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* ======================================================
+       RESPONSIVIDADE
+    ====================================================== */
+    @media (max-width: 600px) {
+      .page { padding: 32px 14px 24px; }
+      .card { padding: 24px 20px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .output-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .output-body { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =====================================================
+       CONTEÚDO PRINCIPAL
+  ====================================================== -->
+  <main class="page">
+    <div class="container">
+
+      <!-- CABEÇALHO -->
+      <header>
+        <div class="header-badge">
+          <span class="dot"></span>
+          <span>IA Generativa ativa</span>
+        </div>
+
+        <!-- Ícone principal -->
+        <div class="header-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+
+        <h1>Assistente IA</h1>
+        <p class="subtitle">Gere mensagens corporativas com apoio de inteligência artificial generativa</p>
+      </header>
+
+      <!-- CARD FORMULÁRIO -->
+      <div class="card">
+        <div class="card-title">Configuração da mensagem</div>
+
+        <form id="ai-form" novalidate>
+
+          <!-- Grade de selects (3 colunas) -->
+          <div class="form-grid">
+
+            <!-- Tipo de mensagem -->
+            <div class="form-group">
+              <label for="tipo">Tipo de mensagem</label>
+              <div class="select-wrapper">
+                <select id="tipo" name="tipo" required>
+                  <option value="" disabled selected>Selecione…</option>
+                  <option value="Email">📧 E-mail</option>
+                  <option value="WhatsApp">💬 WhatsApp</option>
+                  <option value="Aviso">📋 Aviso interno</option>
+                  <option value="Resumo de reunião">🗒️ Resumo de reunião</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Público-alvo -->
+            <div class="form-group">
+              <label for="publico">Público-alvo</label>
+              <div class="select-wrapper">
+                <select id="publico" name="publico" required>
+                  <option value="" disabled selected>Selecione…</option>
+                  <option value="Equipe">👥 Equipe</option>
+                  <option value="Diretoria">🏢 Diretoria</option>
+                  <option value="Colaboradores">🤝 Colaboradores</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Tom de comunicação -->
+            <div class="form-group">
+              <label for="tom">Tom de comunicação</label>
+              <div class="select-wrapper">
+                <select id="tom" name="tom" required>
+                  <option value="" disabled selected>Selecione…</option>
+                  <option value="Formal">🎩 Formal</option>
+                  <option value="Amigável">😊 Amigável</option>
+                  <option value="Urgente">⚡ Urgente</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Tópicos principais (linha inteira) -->
+            <div class="form-group full">
+              <label for="topicos">
+                Tópicos principais
+                <span class="label-hint">— descreva os pontos que a mensagem deve abordar</span>
+              </label>
+              <textarea
+                id="topicos"
+                name="topicos"
+                placeholder="Ex.: reunião de alinhamento na sexta às 15h, sala 3; obrigatória para toda a equipe; confirmar presença até quinta..."
+                required
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Botão gerar -->
+          <button type="submit" class="btn-generate" id="btn-generate">
+            <!-- Ícone de envio -->
+            <svg id="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            <span id="btn-label">Gerar mensagem</span>
+          </button>
+
+        </form>
+      </div>
+      <!-- /card formulário -->
+
+      <!-- ESTADO: CARREGANDO -->
+      <div id="loading-section" role="status" aria-live="polite">
+        <div class="loading-ring" aria-hidden="true">
+          <svg viewBox="0 0 44 44">
+            <circle class="track" cx="22" cy="22" r="18"/>
+            <circle class="arc"   cx="22" cy="22" r="18"/>
+          </svg>
+        </div>
+        <div class="loading-text">Gerando mensagem…</div>
+        <div class="loading-sub">A IA está processando sua solicitação. Aguarde.</div>
+      </div>
+
+      <!-- ESTADO: ERRO -->
+      <div id="error-section" role="alert">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <div class="error-content">
+          <div class="error-title">Não foi possível gerar a mensagem</div>
+          <div class="error-msg" id="error-msg">Verifique sua conexão e tente novamente.</div>
+        </div>
+      </div>
+
+      <!-- ÁREA DE RESPOSTA -->
+      <div id="output-section" aria-live="polite">
+        <div class="output-header">
+          <div class="output-header-left">
+            <div class="output-indicator" aria-hidden="true"></div>
+            <span class="output-label">Mensagem gerada</span>
+            <span class="output-meta" id="output-meta"></span>
+          </div>
+          <button class="btn-copy" id="btn-copy" title="Copiar mensagem" aria-label="Copiar mensagem gerada">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copiar
+          </button>
+        </div>
+        <div class="output-body">
+          <div id="output-text" aria-label="Texto gerado pela IA"></div>
+        </div>
+      </div>
+
+    </div><!-- /container -->
+  </main>
+
+  <!-- =====================================================
+       RODAPÉ
+  ====================================================== -->
+  <footer>
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    Protótipo acadêmico de IA Generativa
+  </footer>
+
+  <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+  <script>
+    /* =======================================================
+       CONFIGURAÇÃO
+       ↓ Substitua a URL abaixo pela URL do seu webhook ↓
+    ======================================================= */
+    const WEBHOOK_URL = 'https://hook.us2.make.com/df4rnwgpqyo9bexok7qx0m91wx3n5why';
+    /* ======================================================= */
+
+    /* --- Referências ao DOM --- */
+    const form          = document.getElementById('ai-form');
+    const btnGenerate   = document.getElementById('btn-generate');
+    const btnIcon       = document.getElementById('btn-icon');
+    const btnLabel      = document.getElementById('btn-label');
+    const loadingSection= document.getElementById('loading-section');
+    const outputSection = document.getElementById('output-section');
+    const outputText    = document.getElementById('output-text');
+    const outputMeta    = document.getElementById('output-meta');
+    const errorSection  = document.getElementById('error-section');
+    const errorMsg      = document.getElementById('error-msg');
+    const btnCopy       = document.getElementById('btn-copy');
+
+    /* --- Utilitários de visibilidade --- */
+    function show(el, displayType = 'flex') {
+      el.style.display = displayType;
+    }
+    function hide(el) {
+      el.style.display = 'none';
+    }
+
+    /* --- Botão: estado de carregamento --- */
+    function setLoading(isLoading) {
+      btnGenerate.disabled = isLoading;
+
+      if (isLoading) {
+        // Troca ícone por spinner
+        btnIcon.style.display = 'none';
+        btnLabel.textContent = 'Gerando…';
+
+        // Insere spinner no botão (se ainda não existe)
+        if (!document.getElementById('btn-spinner')) {
+          const sp = document.createElement('span');
+          sp.id = 'btn-spinner';
+          sp.className = 'spinner';
+          btnGenerate.insertBefore(sp, btnLabel);
+        }
+      } else {
+        // Restaura ícone original
+        btnIcon.style.display = '';
+        btnLabel.textContent = 'Gerar mensagem';
+
+        const sp = document.getElementById('btn-spinner');
+        if (sp) sp.remove();
+      }
+    }
+
+    /* --- Formata timestamp legível --- */
+    function formatTimestamp() {
+      const now = new Date();
+      return now.toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    /* --- Efeito de "digitação" do texto --- */
+    function typeText(el, text, speedMs = 12) {
+      el.textContent = '';
+      el.classList.add('typing-cursor');
+      let i = 0;
+      const interval = setInterval(() => {
+        el.textContent += text[i] ?? '';
+        i++;
+        if (i >= text.length) {
+          clearInterval(interval);
+          el.classList.remove('typing-cursor');
+        }
+      }, speedMs);
+    }
+
+    /* --- Coleta dados do formulário --- */
+    function getFormData() {
+      return {
+        tipo:    document.getElementById('tipo').value,
+        publico: document.getElementById('publico').value,
+        tom:     document.getElementById('tom').value,
+        topicos: document.getElementById('topicos').value.trim()
+      };
+    }
+
+    /* --- Valida campos obrigatórios --- */
+    function validateForm(data) {
+      const missing = Object.values(data).some(v => !v);
+      return !missing;
+    }
+
+    /* --- Chama o webhook e retorna o texto gerado --- */
+    async function callWebhook(payload) {
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+      }
+
+      // Tenta interpretar como JSON ou texto simples
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        const json = await response.json();
+        // Extrai o campo de texto da resposta (ajuste a chave conforme necessário)
+        return json.output || json.message || json.texto || json.result
+          || JSON.stringify(json, null, 2);
+      }
+
+      return await response.text();
+    }
+
+    /* --- Manipulador principal do formulário --- */
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = getFormData();
+
+      // Valida campos
+      if (!validateForm(data)) {
+        alert('Por favor, preencha todos os campos antes de gerar a mensagem.');
+        return;
+      }
+
+      // Oculta outputs anteriores
+      hide(outputSection);
+      hide(errorSection);
+
+      // Ativa estado de carregamento
+      setLoading(true);
+      show(loadingSection, 'flex');
+
+      try {
+        // Envia ao webhook
+        const resultado = await callWebhook(data);
+
+        // Exibe resultado
+        hide(loadingSection);
+        show(outputSection, 'block');
+        outputMeta.textContent = `— ${formatTimestamp()}`;
+        typeText(outputText, resultado, 8);
+
+      } catch (err) {
+        // Exibe erro
+        hide(loadingSection);
+        show(errorSection, 'flex');
+        errorMsg.textContent = err.message || 'Verifique sua conexão e tente novamente.';
+        console.error('[Assistente IA] Erro ao chamar webhook:', err);
+
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    /* --- Botão copiar --- */
+    btnCopy.addEventListener('click', () => {
+      const text = outputText.textContent;
+      if (!text) return;
+
+      navigator.clipboard.writeText(text).then(() => {
+        btnCopy.classList.add('copied');
+        btnCopy.querySelector('span') && null;
+
+        // Feedback visual temporário
+        const originalHTML = btnCopy.innerHTML;
+        btnCopy.innerHTML = `
+          <svg viewBox="0 0 24 24" aria-hidden="true"
+               style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Copiado!
+        `;
+        setTimeout(() => {
+          btnCopy.innerHTML = originalHTML;
+          btnCopy.classList.remove('copied');
+        }, 2000);
+
+      }).catch(() => {
+        alert('Não foi possível copiar. Selecione o texto manualmente.');
+      });
+    });
+  </script>
+
+</body>
+</html>
