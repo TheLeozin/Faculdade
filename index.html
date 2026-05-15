@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SmartBiz Connect – Assistente inteligente para pequenos negócios com geração de conteúdo por IA." />
+  <title>SmartBiz Connect</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Ícones (Feather Icons via CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Partículas de fundo decorativas -->
+  <div class="bg-particles" aria-hidden="true">
+    <span class="particle p1"></span>
+    <span class="particle p2"></span>
+    <span class="particle p3"></span>
+    <span class="particle p4"></span>
+    <span class="particle p5"></span>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <div class="logo" aria-label="SmartBiz Connect">
+        <span class="logo-icon" aria-hidden="true">
+          <i data-feather="zap"></i>
+        </span>
+        <span class="logo-text">SmartBiz<span class="logo-accent"> Connect</span></span>
+      </div>
+      <p class="header-subtitle">
+        Assistente inteligente para pequenos negócios &mdash; gere conteúdo de marketing com IA em segundos.
+      </p>
+    </div>
+  </header>
+
+  <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+  <main class="main-content" role="main">
+    <div class="main-layout" id="main-layout">
+
+      <!-- ===== COLUNA ESQUERDA: Formulário ===== -->
+      <div class="card glass-card">
+
+        <!-- Cabeçalho do card -->
+        <div class="card-header">
+          <h2 class="card-title">
+            <span class="card-title-icon" aria-hidden="true"><i data-feather="edit-3"></i></span>
+            Gerar Conteúdo com IA
+          </h2>
+          <p class="card-description">Preencha os campos abaixo e deixe a IA criar conteúdo personalizado para o seu negócio.</p>
+        </div>
+
+        <!-- Formulário -->
+        <form id="smartbiz-form" class="form" novalidate>
+
+          <!-- Nome da empresa -->
+          <div class="form-group">
+            <label for="nome" class="form-label">
+              <span class="label-icon" aria-hidden="true"><i data-feather="briefcase"></i></span>
+              Nome da empresa
+            </label>
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              class="form-input"
+              placeholder="Ex: Padaria do João"
+              autocomplete="organization"
+              required
+              aria-required="true"
+            />
+            <span class="field-error" id="nome-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Tipo de negócio -->
+          <div class="form-group">
+            <label for="tipo" class="form-label">
+              <span class="label-icon" aria-hidden="true"><i data-feather="tag"></i></span>
+              Tipo de negócio
+            </label>
+            <input
+              type="text"
+              id="tipo"
+              name="tipo"
+              class="form-input"
+              placeholder="Ex: Alimentação, Moda, Tecnologia..."
+              required
+              aria-required="true"
+            />
+            <span class="field-error" id="tipo-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Objetivo -->
+          <div class="form-group">
+            <label for="objetivo" class="form-label">
+              <span class="label-icon" aria-hidden="true"><i data-feather="target"></i></span>
+              Objetivo
+            </label>
+            <textarea
+              id="objetivo"
+              name="objetivo"
+              class="form-input form-textarea"
+              placeholder="Ex: Atrair novos clientes nas redes sociais, promover nova linha de produtos..."
+              rows="3"
+              required
+              aria-required="true"
+            ></textarea>
+            <span class="field-error" id="objetivo-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Tom da comunicação -->
+          <div class="form-group">
+            <label for="tom" class="form-label">
+              <span class="label-icon" aria-hidden="true"><i data-feather="mic"></i></span>
+              Tom da comunicação
+            </label>
+            <div class="select-wrapper">
+              <!-- Input oculto mantém o valor para validação/envio -->
+              <input type="hidden" id="tom" name="tom" value="" />
+
+              <!-- Dropdown 100% customizado -->
+              <div
+                id="tom-custom"
+                class="custom-select"
+                role="combobox"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="tom-options"
+                aria-labelledby="tom-label"
+                tabindex="0"
+              >
+                <div class="custom-select-trigger" id="tom-trigger">
+                  <span class="custom-select-value custom-select-placeholder" id="tom-display">
+                    Selecione um tom...
+                  </span>
+                  <span class="select-arrow" aria-hidden="true">
+                    <i data-feather="chevron-down"></i>
+                  </span>
+                </div>
+                <ul class="custom-select-options" id="tom-options" role="listbox" aria-label="Tom da comunicação" hidden>
+                  <li class="custom-select-option" data-value="Profissional" role="option" tabindex="-1">Profissional</li>
+                  <li class="custom-select-option" data-value="Moderno"      role="option" tabindex="-1">Moderno</li>
+                  <li class="custom-select-option" data-value="Divertido"    role="option" tabindex="-1">Divertido</li>
+                </ul>
+              </div>
+            </div>
+            <span class="field-error" id="tom-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Botão de envio -->
+          <button type="submit" id="submit-btn" class="btn-primary" aria-label="Gerar conteúdo com IA">
+            <span class="btn-content" id="btn-content">
+              <span class="btn-icon" aria-hidden="true"><i data-feather="cpu"></i></span>
+              Gerar Conteúdo com IA
+            </span>
+            <!-- Loading spinner (oculto por padrão) -->
+            <span class="btn-loading" id="btn-loading" aria-hidden="true">
+              <span class="spinner"></span>
+              Gerando conteúdo...
+            </span>
+          </button>
+
+        </form>
+
+        <!-- ===== ÁREA DE ERRO ===== -->
+        <div id="error-area" class="error-area" role="alert" aria-live="assertive" hidden>
+          <span class="error-icon" aria-hidden="true"><i data-feather="alert-triangle"></i></span>
+          <p id="error-message" class="error-message"></p>
+          <button id="retry-btn" class="btn-secondary btn-retry" aria-label="Tentar novamente">
+            <span class="btn-icon" aria-hidden="true"><i data-feather="refresh-cw"></i></span>
+            Tentar novamente
+          </button>
+        </div>
+
+      </div><!-- .card -->
+
+      <!-- ===== COLUNA DIREITA: Resultado da IA ===== -->
+      <div id="result-area" class="result-area" role="region" aria-label="Resultado gerado pela IA" aria-live="polite" hidden>
+        <div class="result-header">
+          <span class="result-icon" aria-hidden="true"><i data-feather="check-circle"></i></span>
+          <h3 class="result-title">Conteúdo gerado com sucesso!</h3>
+        </div>
+        <div id="result-cards" class="result-cards" role="list" aria-label="Conteúdos gerados"></div>
+      </div>
+
+    </div><!-- .main-layout -->
+  </main>
+
+  <!-- ===== RODAPÉ ===== -->
+  <footer class="site-footer" role="contentinfo">
+    <p>Projeto acadêmico de automação web com IA</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Inicializa os ícones Feather após o DOM estar pronto
+    feather.replace();
+  </script>
+</body>
+</html>
